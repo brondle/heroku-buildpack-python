@@ -182,9 +182,14 @@ source "$BIN_DIR/steps/pylibmc"
 HDF5_VERSION="1.8.19"
 HDF5_TAR=hdf5-$HDF5_VERSION.tar.gz
 HDF5_ROOT="$BUILD_DIR/.heroku"
-HDF5_DIR="$HDF5_ROOT/hdf5"
+HDF5_DIR="$HDF5_
+# Django collectstatic support.
+let start=$(nowms)
+sub_env "$BIN_DIR/steps/collectstatic"
+mtime "collectstatic.time" "${start}"
+ROOT/hdf5"
 if [ ! -d $HDF5_DIR ]; then
-  bpwatch start hdf5_install
+bpwatch start hdf5_install
     puts-step "Installing HDF5 ($HDF5_VERSION)"
     if [ ! -f $HDF5_TAR ]; then
       wget ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-$HDF5_VERSION.tar.gz

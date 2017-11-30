@@ -178,7 +178,29 @@ source "$BIN_DIR/steps/mercurial"
 # Pylibmc support.
 # shellcheck source=bin/steps/pylibmc
 source "$BIN_DIR/steps/pylibmc"
+#install hdf5
+HDF5_VERSION="1.8.19"
+HDF5_TAR=hdf5-$HDF5_VERSION.tar.gz
+HDF5_ROOT="$BUILD_DIR/.heroku"
+HDF5_DIR="$HDF5_ROOT/hdf5"
+if [ ! -d $HDF5_DIR ]; then
+  bpwatch start hdf5_install
+    puts-step "Installing HDF5 ($HDF5_VERSION)"
+    if [ ! -f $HDF5_TAR ]; then
+      wget ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-$HDF5_VERSION.tar.gz
+    fi
+    tar zxf $HDF5_TAR
+    cd hdf5-$HDF5_VERSION
+    ./configure
+    make
+    make install
+    mv hdf5 $HDF5_ROOT
+    cd ..
+  bpwatch stop hdf5_install
+fi
 
+export HDF5_DIR=$HDF5_DIR
+export LD_LIBRARY_PATH=$HDF5_DIR/lib:$LD_LIBRARY_PATH
 # Libffi support.
 # shellcheck source=bin/steps/cryptography
 source "$BIN_DIR/steps/cryptography"
